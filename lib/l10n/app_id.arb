@@ -1,0 +1,291 @@
+{
+  "appTitle": "Permainan Tebak Head 2 Head",
+  "gameDescription": "Tebak karakter Poké yang dipilih lawanmu sebelum dia menebak milikmu!",
+  "createGame": "Buat Permainan",
+  "joinGame": "Gabung Permainan",
+  "settings": "Pengaturan",
+  "howToPlay": "Cara Bermain",
+  "legalTerms": "Ketentuan Hukum",
+  "close": "Tutup",
+  "yourName": "Nama Anda",
+  "selectGenerations": "Pilih generasi untuk permainan",
+  "numberOfCharacters": "Jumlah Karakter",
+  "generating": "Membuat...",
+  "generateCodeQR": "Buat Kode & QR",
+  "waitingForPlayer": "Menunggu pemain lain memindai kode QR atau memasukkan kode...",
+  "gameCodeLabel": "Kode Permainan",
+  "orScanQR": "Atau pindai kode QR ini",
+  "goToLobby": "Ke Lobi",
+  "pleaseEnterName": "Silakan masukkan nama Anda.",
+  "pleaseSelectGeneration": "Silakan pilih setidaknya satu generasi.",
+  "failedToCreateGame": "Gagal membuat permainan",
+  "enterNameAndCode": "Masukkan nama Anda dan kode 6 digit.",
+  "gameCodeHint": "mis. ABC123",
+  "failedToJoin": "Gagal bergabung",
+  "failedToSignIn": "Gagal masuk",
+  "leaveGame": "Tinggalkan Permainan?",
+  "leave": "Tinggalkan",
+  "cancel": "Batal",
+  "confirm": "Konfirmasi",
+  "selectCharacter": "Pilih Karakter",
+  "opponentReady": "Lawan Anda sudah siap!",
+  "dismiss": "Tutup",
+  "gameOver": "Permainan Selesai",
+  "questionSent": "✅ Pertanyaan terkirim!",
+  "answerSent": "✅ Jawaban terkirim!",
+  "error": "❌ Kesalahan",
+  "sendingAnswer": "📤 Mengirim jawaban",
+  "opponentLeft": "Lawan Anda meninggalkan permainan",
+  "guessTheCharacter": "Tebak Karakternya!",
+  "askQuestion": "Ajukan pertanyaan...",
+  "noCharacterToGuess": "Tidak ada karakter tersedia untuk ditebak",
+  "guess": "Tebak",
+  "roundResult": "Hasil Ronde",
+  "language": "Bahasa",
+  "vibration": "Getaran",
+  "yes": "Ya",
+  "no": "Tidak",
+  "iDontKnow": "Saya tidak tahu",
+  "kanto": "Kanto",
+  "johto": "Johto",
+  "hoenn": "Hoenn",
+  "sinnoh": "Sinnoh",
+  "unova": "Unova",
+  "kalos": "Kalos",
+  "alola": "Alola",
+  "galar": "Galar",
+  "paldea": "Paldea",
+  "eula": "Perjanjian Lisensi Pengguna Akhir (EULA)",
+  "eulaTitle": "EULA",
+  "eulaContent": "Aplikasi ini disediakan di bawah Lisensi MIT. Dengan menggunakan aplikasi ini, Anda setuju untuk mematuhi syarat dan ketentuan yang ditetapkan dalam lisensi dan persyaratan toko aplikasi yang berlaku.",
+  "privacyPolicy": "Kebijakan Privasi",
+  "termsOfService": "Ketentuan Layanan",
+  "termsOfServiceContent": "Dengan menggunakan aplikasi ini, Anda setuju untuk menggunakannya hanya untuk tujuan hiburan dan bukan untuk aktivitas ilegal. Lihat Lisensi MIT untuk detail lebih lanjut.",
+  "pokemonTrademarkNotice": "Pokémon dan nama karakter Pokémon adalah merek dagang milik Nintendo.",
+  "creatingGame": "Membuat Permainan",
+  "creatingGameDesc": "1. Buat permainan dengan mengklik tombol 'Buat Permainan'\n2. Masukkan nama Anda dan pilih generasi dan jumlah karakter yang ingin Anda sertakan dalam permainan\n3. Buat kode permainan atau kode QR untuk dibagikan dengan lawan Anda\n4. Bagikan dengan lawan Anda agar mereka dapat bergabung",
+  "joiningGame": "Bergabung ke Permainan",
+  "joiningGameDesc": "1. Gabung permainan dengan mengklik tombol 'Gabung Permainan'\n2. Masukkan nama Anda dan kode permainan atau pindai kode QR\n3. Pilih karakter Anda",
+  "playingGame": "Bermain",
+  "playingGameDesc": "1. Lemparan koin menentukan siapa yang mulai\n2. Bergantian mengajukan pertanyaan ya/tidak melalui antarmuka obrolan\n3. Eliminasi karakter berdasarkan jawaban\n4. Tebak karakter yang dipilih lawan Anda sebelum dia menebak milik Anda!",
+  "privacyPolicyTitle": "Kebijakan Privasi",
+  "privacyPolicyIntro": "Aplikasi ini menggunakan layanan Firebase untuk menyediakan fungsi multipemain dan menyimpan data permainan. Kami dapat mengumpulkan informasi dasar seperti nama pengguna, kemajuan permainan, dan informasi perangkat untuk tujuan permainan dan peningkatan aplikasi. Informasi pribadi tidak dijual atau dibagikan kepada pihak ketiga kecuali sebagaimana diperlukan oleh Firebase atau hukum.",
+  "dataCollected": "Data yang Dikumpulkan:",
+  "dataCollectedList": "- Nama pengguna dan kode permainan\n- Kemajuan permainan dan skor\n- Informasi perangkat (untuk analitik/pemecahan masalah)",
+  "howWeUseData": "Cara Kami Menggunakan Data:",
+  "howWeUseDataList": "- Untuk mengaktifkan gameplay multipemain\n- Untuk menyimpan kemajuan Anda\n- Untuk meningkatkan kinerja dan stabilitas aplikasi",
+  "thirdPartyServices": "Layanan Pihak Ketiga:",
+  "thirdPartyServicesDesc": "Kami menggunakan Google Firebase untuk autentikasi, database, dan analitik. Harap baca kebijakan privasi Firebase untuk detail lebih lanjut.",
+  "contact": "Kontak:",
+  "contactDesc": "Jika Anda memiliki pertanyaan tentang privasi, hubungi pengembang.",
+  "copyCode": "Salin Kode",
+  "codeCopied": "Kode permainan disalin ke papan klip!",
+  "gameNotFound": "Permainan tidak ditemukan. Silakan periksa kode.",
+  "scanQRCode": "Pindai Kode QR",
+  "joining": "Bergabung...",
+  "gen": "Gen",
+  "createGameTitle": "Buat Permainan",
+  "createGameHeading": "Buat permainan",
+  "createGameDescription": "Masukkan nama Anda untuk membuat kode 6 digit dan kode QR agar teman Anda dapat bergabung.",
+  "waitingForFriend": "Menunggu teman...",
+  "friendCanScanQR": "Teman Anda dapat memindai kode QR ini atau memasukkan kode untuk bergabung.",
+  "joinAFriend": "Gabung dengan Teman",
+  "enterNameAndCodeOrScan": "Masukkan nama Anda dan kode 6 digit atau pindai QR mereka.",
+  "gameCode": "Kode Permainan",
+  "gameCodeExample": "mis. ABC123",
+  "qrScanningNotAvailableWeb": "Pemindaian QR tidak tersedia di web. Silakan masukkan kode secara manual.",
+  "gameNotFoundCheckCode": "Permainan tidak ditemukan. Silakan periksa kode.",
+  "failedToJoinError": "Gagal bergabung: {error}",
+  "@failedToJoinError": {
+    "description": "Failed to join error message with parameter",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "leaveGameConfirmation": "Apakah Anda yakin ingin pergi? Permainan akan diakhiri.",
+  "playingAgainst": "Bermain melawan: {opponentName}",
+  "@playingAgainst": {
+    "description": "Playing against opponent message",
+    "placeholders": {
+      "opponentName": {
+        "type": "String"
+      }
+    }
+  },
+  "generationsInGame": "Generasi dalam permainan ini:",
+  "yourCharacter": "Karakter Anda",
+  "chat": "Obrolan",
+  "yourTurnToAnswer": "Giliran Anda menjawab",
+  "yourTurnToAsk": "Giliran Anda bertanya",
+  "waitingForAnswer": "Menunggu jawaban",
+  "waitingForQuestion": "Menunggu pertanyaan",
+  "hideEliminated": "Sembunyikan dihilangkan",
+  "charactersRemaining": "{opponentName} memiliki {count} karakter tersisa",
+  "@charactersRemaining": {
+    "description": "Characters remaining message with parameters",
+    "placeholders": {
+      "opponentName": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noAvailableCharacter": "Tidak ada karakter tersedia untuk ditebak",
+  "makeAGuess": "Buat Tebakan!",
+  "confirmGuess": "Apakah Anda yakin ingin menebak {pokemonName}?",
+  "@confirmGuess": {
+    "description": "Confirm guess message with Pokemon name",
+    "placeholders": {
+      "pokemonName": {
+        "type": "String"
+      }
+    }
+  },
+  "noMessagesYet": "Belum ada pesan...",
+  "eliminateReminder": "Jangan lupa mengeliminasi karakter! Mereka ada di akhir daftar (Kecuali disembunyikan).",
+  "opponentTyping": "Lawan sedang mengetik...",
+  "sendQuestion": "Kirim Pertanyaan",
+  "guessCharacter": "Tebak Karakter",
+  "waitingForAnswerEllipsis": "Menunggu jawaban...",
+  "waitingForQuestionEllipsis": "Menunggu pertanyaan...",
+  "dontKnow": "Tidak tahu",
+  "youGoFirst": "Anda mulai duluan!",
+  "playerGoesFirst": "{playerName} mulai duluan!",
+  "@playerGoesFirst": {
+    "description": "Player goes first message",
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "correct": "BENAR!",
+  "timesUp": "WAKTU HABIS!",
+  "incorrect": "SALAH!",
+  "nextRoundStarting": "Ronde berikutnya dimulai...",
+  "startingNewRound": "Memulai ronde baru...",
+  "youWin": "🎉 ANDA MENANG! 🎉",
+  "youSuccessfullyGuessed": "Anda berhasil menebak karakter lawan!",
+  "opponentWins": "{opponentName} menang",
+  "@opponentWins": {
+    "description": "Opponent wins message",
+    "placeholders": {
+      "opponentName": {
+        "type": "String"
+      }
+    }
+  },
+  "opponentGuessedCorrectly": "{opponentName} menebak karakter Anda dengan benar!",
+  "@opponentGuessedCorrectly": {
+    "description": "Opponent guessed correctly message",
+    "placeholders": {
+      "opponentName": {
+        "type": "String"
+      }
+    }
+  },
+  "charactersSelected": "Karakter yang dipilih:",
+  "score": "Skor",
+  "@score": {"description": "Score label on game over screen"},
+  "wantsToPlayAgain": "{playerName} ingin bermain lagi!",
+  "@wantsToPlayAgain": {
+    "description": "Player wants to play again message",
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingForOpponentToPlayAgain": "Menunggu lawan untuk bermain lagi...",
+  "waitingForOpponentEllipsis": "Menunggu lawan...",
+  "playAgain": "Main Lagi",
+
+  "typeNormal": "Normal",
+  "@typeNormal": {"description": "Normal type Pokemon"},
+  
+  "typeFire": "Api",
+  "@typeFire": {"description": "Fire type Pokemon"},
+  
+  "typeWater": "Air",
+  "@typeWater": {"description": "Water type Pokemon"},
+  
+  "typeGrass": "Rumput",
+  "@typeGrass": {"description": "Grass type Pokemon"},
+  
+  "typeElectric": "Listrik",
+  "@typeElectric": {"description": "Electric type Pokemon"},
+  
+  "typeIce": "Es",
+  "@typeIce": {"description": "Ice type Pokemon"},
+  
+  "typeFighting": "Petarung",
+  "@typeFighting": {"description": "Fighting type Pokemon"},
+  
+  "typePoison": "Racun",
+  "@typePoison": {"description": "Poison type Pokemon"},
+  
+  "typeGround": "Tanah",
+  "@typeGround": {"description": "Ground type Pokemon"},
+  
+  "typeFlying": "Terbang",
+  "@typeFlying": {"description": "Flying type Pokemon"},
+  
+  "typePsychic": "Psikis",
+  "@typePsychic": {"description": "Psychic type Pokemon"},
+  
+  "typeBug": "Serangga",
+  "@typeBug": {"description": "Bug type Pokemon"},
+  
+  "typeRock": "Batu",
+  "@typeRock": {"description": "Rock type Pokemon"},
+  
+  "typeGhost": "Hantu",
+  "@typeGhost": {"description": "Ghost type Pokemon"},
+  
+  "typeDragon": "Naga",
+  "@typeDragon": {"description": "Dragon type Pokemon"},
+  
+  "typeDark": "Gelap",
+  "@typeDark": {"description": "Dark type Pokemon"},
+  
+  "typeSteel": "Baja",
+  "@typeSteel": {"description": "Steel type Pokemon"},
+  
+  "typeFairy": "Peri",
+  "@typeFairy": {"description": "Fairy type Pokemon"},
+
+  "evolutionChain": "Rantai Evolusi",
+  "@evolutionChain": {"description": "Label for Pokemon evolution chain section"},
+
+  "type": "Tipe",
+  "@type": {"description": "Type label"},
+  
+  "physicalStats": "Statistik Fisik",
+  "@physicalStats": {"description": "Physical stats label"},
+  
+  "height": "Tinggi",
+  "@height": {"description": "Height label"},
+  
+  "weight": "Berat",
+  "@weight": {"description": "Weight label"},
+  
+  "baseStats": "Statistik Dasar",
+  "@baseStats": {"description": "Base stats label"},
+  
+  "abilities": "Kemampuan",
+  "@abilities": {"description": "Abilities label"},
+  
+  "guessQuestion": "Apakah itu {pokemonName}?",
+  "@guessQuestion": {
+    "description": "Question format when making a guess",
+    "placeholders": {
+      "pokemonName": {
+        "type": "String"
+      }
+    }
+  }
+}

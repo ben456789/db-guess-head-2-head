@@ -1,0 +1,291 @@
+{
+  "appTitle": "Jogo de Adivinhação Head 2 Head",
+  "gameDescription": "Adivinhe qual personagem Poké seu oponente escolheu antes que ele adivinhe o seu!",
+  "createGame": "Criar Jogo",
+  "joinGame": "Entrar no Jogo",
+  "settings": "Configurações",
+  "howToPlay": "Como Jogar",
+  "legalTerms": "Termos Legais",
+  "close": "Fechar",
+  "yourName": "Seu Nome",
+  "selectGenerations": "Selecione as gerações para o jogo",
+  "numberOfCharacters": "Número de Personagens",
+  "generating": "Gerando...",
+  "generateCodeQR": "Gerar Código e QR",
+  "waitingForPlayer": "Aguardando outro jogador escanear o código QR ou digitar o código...",
+  "gameCodeLabel": "Código do Jogo",
+  "orScanQR": "Ou escaneie este código QR",
+  "goToLobby": "Ir para o Lobby",
+  "pleaseEnterName": "Por favor, insira seu nome.",
+  "pleaseSelectGeneration": "Por favor, selecione pelo menos uma geração.",
+  "failedToCreateGame": "Falha ao criar o jogo",
+  "enterNameAndCode": "Digite seu nome e o código de 6 dígitos.",
+  "gameCodeHint": "ex: ABC123",
+  "failedToJoin": "Falha ao entrar",
+  "failedToSignIn": "Falha ao fazer login",
+  "leaveGame": "Sair do Jogo?",
+  "leave": "Sair",
+  "cancel": "Cancelar",
+  "confirm": "Confirmar",
+  "selectCharacter": "Selecionar Personagem",
+  "opponentReady": "Seu oponente está pronto!",
+  "dismiss": "Dispensar",
+  "gameOver": "Fim de Jogo",
+  "questionSent": "✅ Pergunta enviada!",
+  "answerSent": "✅ Resposta enviada!",
+  "error": "❌ Erro",
+  "sendingAnswer": "📤 Enviando resposta",
+  "opponentLeft": "Seu oponente saiu do jogo",
+  "guessTheCharacter": "Adivinhe o Personagem!",
+  "askQuestion": "Faça uma pergunta...",
+  "noCharacterToGuess": "Nenhum personagem disponível para adivinhar",
+  "guess": "Adivinhar",
+  "roundResult": "Resultado da Rodada",
+  "language": "Idioma",
+  "vibration": "Vibração",
+  "yes": "Sim",
+  "no": "Não",
+  "iDontKnow": "Não sei",
+  "kanto": "Kanto",
+  "johto": "Johto",
+  "hoenn": "Hoenn",
+  "sinnoh": "Sinnoh",
+  "unova": "Unova",
+  "kalos": "Kalos",
+  "alola": "Alola",
+  "galar": "Galar",
+  "paldea": "Paldea",
+  "eula": "Contrato de Licença de Usuário Final (EULA)",
+  "eulaTitle": "EULA",
+  "eulaContent": "Este aplicativo é fornecido sob a Licença MIT. Ao usar este aplicativo, você concorda em cumprir os termos e condições estabelecidos na licença e quaisquer requisitos aplicáveis da loja de aplicativos.",
+  "privacyPolicy": "Política de Privacidade",
+  "termsOfService": "Termos de Serviço",
+  "termsOfServiceContent": "Ao usar este aplicativo, você concorda em usá-lo apenas para fins de entretenimento e não para atividades ilegais. Consulte a Licença MIT para mais detalhes.",
+  "pokemonTrademarkNotice": "Pokémon e os nomes dos personagens Pokémon são marcas comerciais da Nintendo.",
+  "creatingGame": "Criando um Jogo",
+  "creatingGameDesc": "1. Crie o jogo clicando no botão 'Criar Jogo'\n2. Digite seu nome e escolha quais gerações e quantos personagens deseja incluir no jogo\n3. Gere um código de jogo ou código QR para compartilhar com seu oponente\n4. Compartilhe com seu oponente para que ele possa entrar",
+  "joiningGame": "Entrando em um Jogo",
+  "joiningGameDesc": "1. Entre em um jogo clicando no botão 'Entrar no Jogo'\n2. Digite seu nome e o código do jogo ou escaneie o código QR\n3. Selecione seu personagem",
+  "playingGame": "Jogando o Jogo",
+  "playingGameDesc": "1. Um lançamento de moeda decide quem começa\n2. Alternem fazendo perguntas de sim/não pela interface de chat\n3. Elimine personagens com base nas respostas\n4. Adivinhe qual personagem seu oponente escolheu antes que ele adivinhe o seu!",
+  "privacyPolicyTitle": "Política de Privacidade",
+  "privacyPolicyIntro": "Este aplicativo usa serviços Firebase para fornecer funcionalidade multijogador e armazenar dados do jogo. Podemos coletar informações básicas como nomes de usuário, progresso do jogo e informações do dispositivo para fins de jogo e melhoria do aplicativo. Informações pessoais não são vendidas ou compartilhadas com terceiros, exceto conforme exigido pelo Firebase ou por lei.",
+  "dataCollected": "Dados Coletados:",
+  "dataCollectedList": "- Nomes de usuário e códigos de jogo\n- Progresso do jogo e pontuações\n- Informações do dispositivo (para análise/solução de problemas)",
+  "howWeUseData": "Como Usamos os Dados:",
+  "howWeUseDataList": "- Para permitir jogabilidade multijogador\n- Para salvar seu progresso\n- Para melhorar o desempenho e estabilidade do aplicativo",
+  "thirdPartyServices": "Serviços de Terceiros:",
+  "thirdPartyServicesDesc": "Usamos o Google Firebase para autenticação, banco de dados e análises. Por favor, leia a política de privacidade do Firebase para mais detalhes.",
+  "contact": "Contato:",
+  "contactDesc": "Se você tiver perguntas sobre privacidade, entre em contato com o desenvolvedor.",
+  "copyCode": "Copiar Código",
+  "codeCopied": "Código do jogo copiado para a área de transferência!",
+  "gameNotFound": "Jogo não encontrado. Por favor, verifique o código.",
+  "scanQRCode": "Escanear Código QR",
+  "joining": "Entrando...",
+  "gen": "Ger",
+  "createGameTitle": "Criar Jogo",
+  "createGameHeading": "Criar jogo",
+  "createGameDescription": "Digite seu nome para gerar um código de 6 dígitos e um código QR para seu amigo entrar.",
+  "waitingForFriend": "Aguardando amigo...",
+  "friendCanScanQR": "Seu amigo pode escanear este código QR ou digitar o código para entrar.",
+  "joinAFriend": "Entrar com um Amigo",
+  "enterNameAndCodeOrScan": "Digite seu nome e o código de 6 dígitos ou escaneie o QR dele.",
+  "gameCode": "Código do Jogo",
+  "gameCodeExample": "ex: ABC123",
+  "qrScanningNotAvailableWeb": "Escaneamento de QR não está disponível na web. Por favor, digite o código manualmente.",
+  "gameNotFoundCheckCode": "Jogo não encontrado. Por favor, verifique o código.",
+  "failedToJoinError": "Falha ao entrar: {error}",
+  "@failedToJoinError": {
+    "description": "Failed to join error message with parameter",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "leaveGameConfirmation": "Tem certeza que deseja sair? O jogo será encerrado.",
+  "playingAgainst": "Jogando contra: {opponentName}",
+  "@playingAgainst": {
+    "description": "Playing against opponent message",
+    "placeholders": {
+      "opponentName": {
+        "type": "String"
+      }
+    }
+  },
+  "generationsInGame": "Gerações neste jogo:",
+  "yourCharacter": "Seu Personagem",
+  "chat": "Chat",
+  "yourTurnToAnswer": "Sua vez de responder",
+  "yourTurnToAsk": "Sua vez de perguntar",
+  "waitingForAnswer": "Aguardando resposta",
+  "waitingForQuestion": "Aguardando pergunta",
+  "hideEliminated": "Ocultar Eliminados",
+  "charactersRemaining": "{opponentName} tem {count} personagens restantes",
+  "@charactersRemaining": {
+    "description": "Characters remaining message with parameters",
+    "placeholders": {
+      "opponentName": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noAvailableCharacter": "Nenhum personagem disponível para adivinhar",
+  "makeAGuess": "Faça um Palpite!",
+  "confirmGuess": "Tem certeza que deseja adivinhar {pokemonName}?",
+  "@confirmGuess": {
+    "description": "Confirm guess message with Pokemon name",
+    "placeholders": {
+      "pokemonName": {
+        "type": "String"
+      }
+    }
+  },
+  "noMessagesYet": "Ainda sem mensagens...",
+  "eliminateReminder": "Não se esqueça de eliminar personagens! Eles estão no final da lista (A menos que estejam ocultos).",
+  "opponentTyping": "Oponente digitando...",
+  "sendQuestion": "Enviar Pergunta",
+  "guessCharacter": "Adivinhar Personagem",
+  "waitingForAnswerEllipsis": "Aguardando resposta...",
+  "waitingForQuestionEllipsis": "Aguardando pergunta...",
+  "dontKnow": "Não sei",
+  "youGoFirst": "Você começa!",
+  "playerGoesFirst": "{playerName} começa!",
+  "@playerGoesFirst": {
+    "description": "Player goes first message",
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "correct": "CORRETO!",
+  "timesUp": "TEMPO ESGOTADO!",
+  "incorrect": "INCORRETO!",
+  "nextRoundStarting": "Próxima rodada começando...",
+  "startingNewRound": "Iniciando nova rodada...",
+  "youWin": "🎉 VOCÊ VENCEU! 🎉",
+  "youSuccessfullyGuessed": "Você adivinhou com sucesso o personagem do seu oponente!",
+  "opponentWins": "{opponentName} vence",
+  "@opponentWins": {
+    "description": "Opponent wins message",
+    "placeholders": {
+      "opponentName": {
+        "type": "String"
+      }
+    }
+  },
+  "opponentGuessedCorrectly": "{opponentName} adivinhou seu personagem corretamente!",
+  "@opponentGuessedCorrectly": {
+    "description": "Opponent guessed correctly message",
+    "placeholders": {
+      "opponentName": {
+        "type": "String"
+      }
+    }
+  },
+  "charactersSelected": "Personagens selecionados:",
+  "score": "Pontuação",
+  "@score": {"description": "Score label on game over screen"},
+  "wantsToPlayAgain": "{playerName} quer jogar novamente!",
+  "@wantsToPlayAgain": {
+    "description": "Player wants to play again message",
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingForOpponentToPlayAgain": "Aguardando o oponente jogar novamente...",
+  "waitingForOpponentEllipsis": "Aguardando oponente...",
+  "playAgain": "Jogar Novamente",
+
+  "typeNormal": "Normal",
+  "@typeNormal": {"description": "Normal type Pokemon"},
+  
+  "typeFire": "Fogo",
+  "@typeFire": {"description": "Fire type Pokemon"},
+  
+  "typeWater": "Água",
+  "@typeWater": {"description": "Water type Pokemon"},
+  
+  "typeGrass": "Planta",
+  "@typeGrass": {"description": "Grass type Pokemon"},
+  
+  "typeElectric": "Elétrico",
+  "@typeElectric": {"description": "Electric type Pokemon"},
+  
+  "typeIce": "Gelo",
+  "@typeIce": {"description": "Ice type Pokemon"},
+  
+  "typeFighting": "Lutador",
+  "@typeFighting": {"description": "Fighting type Pokemon"},
+  
+  "typePoison": "Veneno",
+  "@typePoison": {"description": "Poison type Pokemon"},
+  
+  "typeGround": "Terra",
+  "@typeGround": {"description": "Ground type Pokemon"},
+  
+  "typeFlying": "Voador",
+  "@typeFlying": {"description": "Flying type Pokemon"},
+  
+  "typePsychic": "Psíquico",
+  "@typePsychic": {"description": "Psychic type Pokemon"},
+  
+  "typeBug": "Inseto",
+  "@typeBug": {"description": "Bug type Pokemon"},
+  
+  "typeRock": "Pedra",
+  "@typeRock": {"description": "Rock type Pokemon"},
+  
+  "typeGhost": "Fantasma",
+  "@typeGhost": {"description": "Ghost type Pokemon"},
+  
+  "typeDragon": "Dragão",
+  "@typeDragon": {"description": "Dragon type Pokemon"},
+  
+  "typeDark": "Sombrio",
+  "@typeDark": {"description": "Dark type Pokemon"},
+  
+  "typeSteel": "Aço",
+  "@typeSteel": {"description": "Steel type Pokemon"},
+  
+  "typeFairy": "Fada",
+  "@typeFairy": {"description": "Fairy type Pokemon"},
+
+  "evolutionChain": "Cadeia Evolutiva",
+  "@evolutionChain": {"description": "Label for Pokemon evolution chain section"},
+
+  "type": "Tipo",
+  "@type": {"description": "Type label"},
+  
+  "physicalStats": "Estatísticas Físicas",
+  "@physicalStats": {"description": "Physical stats label"},
+  
+  "height": "Altura",
+  "@height": {"description": "Height label"},
+  
+  "weight": "Peso",
+  "@weight": {"description": "Weight label"},
+  
+  "baseStats": "Estatísticas Base",
+  "@baseStats": {"description": "Base stats label"},
+  
+  "abilities": "Habilidades",
+  "@abilities": {"description": "Abilities label"},
+  
+  "guessQuestion": "É {pokemonName}?",
+  "@guessQuestion": {
+    "description": "Question format when making a guess",
+    "placeholders": {
+      "pokemonName": {
+        "type": "String"
+      }
+    }
+  }
+}

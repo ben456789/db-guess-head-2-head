@@ -1,0 +1,26 @@
+{
+  "rules": {
+    "games": {
+      "$gameCode": {
+        ".read": true,
+        ".write": true,
+        "players": {
+          "$playerId": {
+            ".read": true,
+            ".write": true
+          }
+        },
+        "character": {
+          ".read": true,
+          ".write": true
+        },
+        "questions": {
+          "$questionId": {
+            ".read": true,
+            ".write": true
+          }
+        }
+      }
+    }
+  }
+}

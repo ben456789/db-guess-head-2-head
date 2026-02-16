@@ -1,0 +1,61 @@
+{
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "functions": [
+    {
+      "codebase": "default",
+      "source": "functions",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ],
+  "hosting": {
+    "public": "web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "emulators": {
+    "database": {
+      "host": "localhost",
+      "port": 9000
+    },
+    "ui": {
+      "enabled": true,
+      "host": "localhost",
+      "port": 4000
+    }
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "poke-guess-head-to-head-2c305",
+          "appId": "1:656639392887:android:bfe6d366f8fa566b0e9a72",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "poke-guess-head-to-head-2c305",
+          "configurations": {
+            "android": "1:656639392887:android:bfe6d366f8fa566b0e9a72",
+            "ios": "1:656639392887:ios:bfc047349fac3d740e9a72"
+          }
+        }
+      }
+    }
+  }
+}
