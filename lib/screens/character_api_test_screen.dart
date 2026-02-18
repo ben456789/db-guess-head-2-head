@@ -29,7 +29,7 @@ class _CharacterApiTestScreenState extends State<CharacterApiTestScreen> {
     });
 
     try {
-      final characters = await CharacterService.getMultipleRandomCharacters(10);
+      final characters = await CharacterService.getMultipleRandomCharacters();
       setState(() {
         _characters = characters;
         _isLoading = false;

@@ -147,10 +147,6 @@ class GameState {
   final List<int> selectedCategories; // races/affiliations for Dragon Ball
   final List<Character> availableCharacters;
   final Map<String, Player> players;
-
-  // Backwards compatibility
-  List<int> get selectedGenerations => selectedCategories;
-  List<Character> get availablePokemon => availableCharacters;
   final List<GameMessage> messages;
   GamePhase currentPhase;
   String? currentPlayerId;
@@ -238,9 +234,6 @@ class GameState {
       'availableCharacters': availableCharacters
           .map((c) => c.toJson())
           .toList(),
-      'availablePokemon': availableCharacters
-          .map((c) => c.toJson())
-          .toList(), // Backwards compatibility
       'players': players.map((key, player) => MapEntry(key, player.toJson())),
       'messages': messages.map((m) => m.toJson()).toList(),
       'currentPhase': currentPhase.name,
@@ -260,8 +253,7 @@ class GameState {
 
   factory GameState.fromJson(Map<String, dynamic> json) {
     // Support both new and old field names for backwards compatibility
-    final charactersJson =
-        json['availableCharacters'] ?? json['availablePokemon'];
+    final charactersJson = json['availableCharacters'];
     final availableCharacters =
         (charactersJson as List?)?.map((p) {
           final characterData = Map<String, dynamic>.from(

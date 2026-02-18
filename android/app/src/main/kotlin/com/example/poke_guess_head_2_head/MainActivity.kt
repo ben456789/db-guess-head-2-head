@@ -1,4 +1,4 @@
-package com.frontendben.poke_guess_head_2_head
+package com.example.db_guess_head_2_head
 
 import io.flutter.embedding.android.FlutterActivity
 

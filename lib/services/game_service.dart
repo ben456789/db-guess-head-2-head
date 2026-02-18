@@ -270,9 +270,6 @@ class GameService {
   ) async {
     final gameRef = _database.ref('$_gamesPath/$gameCode/availableCharacters');
     await gameRef.set(characters.map((c) => c.toJson()).toList());
-    // Also set old field for backwards compatibility
-    final oldGameRef = _database.ref('$_gamesPath/$gameCode/availablePokemon');
-    await oldGameRef.set(characters.map((c) => c.toJson()).toList());
   }
 
   // Set available Pokemon for the game (backwards compatibility)
@@ -280,9 +277,6 @@ class GameService {
     if (pokemon.isNotEmpty && pokemon.first is Character) {
       return setCharacters(gameCode, pokemon.cast<Character>());
     }
-    // Legacy support if somehow Pokemon objects are still used
-    final gameRef = _database.ref('$_gamesPath/$gameCode/availablePokemon');
-    await gameRef.set(pokemon.map((p) => (p as dynamic).toJson()).toList());
   }
 
   // Choose Character for a player

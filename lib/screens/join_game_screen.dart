@@ -90,21 +90,14 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
           _codeErrorText = null;
         });
       }
-      final selectedGenerations =
-          (gameProvider.gameState?.selectedGenerations ?? []);
-      // Set _joining to false BEFORE navigation to avoid setState after navigation
-      if (mounted) setState(() => _joining = false);
-      // Use post-frame callback to navigate after build is complete
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) =>
-                  GameScreen(selectedGenerations: selectedGenerations),
-            ),
-          );
-        }
-      });
+      // Navigate to GameScreen — it will route to CharacterSelectionScreen
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => const GameScreen(selectedGenerations: []),
+          ),
+        );
+      }
       return;
     } catch (e) {
       setState(() {
@@ -178,7 +171,11 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF1E90FF), Color(0xFF1C7ED6), Color(0xFF1864AB)],
+          colors: [
+            Color.fromARGB(255, 255, 120, 30),
+            Color.fromARGB(255, 214, 133, 28),
+            Color.fromARGB(255, 171, 83, 24),
+          ],
         ),
       ),
       child: Scaffold(

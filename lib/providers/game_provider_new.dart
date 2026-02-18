@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../models/game_state.dart';
-import '../models/pokemon.dart';
-import '../services/pokemon_service.dart';
+import '../models/character.dart';
+import '../services/character_service.dart';
 import '../services/game_service.dart';
 
 class GameProvider extends ChangeNotifier {
@@ -51,14 +51,6 @@ class GameProvider extends ChangeNotifier {
         _playerName!,
         selectedGenerations,
       );
-
-      // Load Pokemon for selected generations
-      final pokemon = await PokemonService.getPokemonByGenerations(
-        selectedGenerations,
-        36,
-      );
-      await GameService.setPokemon(_gameState!.gameCode, pokemon);
-
       _listenToGameChanges(_gameState!.gameCode);
     } catch (e) {
       _setError('Failed to create game: $e');
@@ -102,14 +94,14 @@ class GameProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> choosePokemon(Pokemon pokemon) async {
+  Future<void> choosePokemon(Character character) async {
     if (_gameState == null || _playerId == null) return;
 
     try {
       await GameService.choosePokemon(
         _gameState!.gameCode,
         _playerId!,
-        pokemon,
+        character,
       );
 
       // Check if both players have chosen
@@ -171,12 +163,12 @@ class GameProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> makeFinalGuess(Pokemon guessedPokemon) async {
+  Future<void> makeFinalGuess(Character guessedCharacter) async {
     if (_gameState == null || _playerId == null) return;
 
     try {
       final opponent = this.opponent;
-      if (opponent?.chosenPokemon?.id == guessedPokemon.id) {
+      if (opponent?.chosenCharacter?.id == guessedCharacter.id) {
         // Correct guess - player wins
         await GameService.endGame(_gameState!.gameCode, _playerId!);
       } else {
@@ -191,39 +183,39 @@ class GameProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> eliminatePokemon(int pokemonId) async {
+  Future<void> eliminateCharacter(int characterId) async {
     if (_gameState == null || _playerId == null) return;
 
     try {
       final currentUser = this.currentUser;
       if (currentUser != null) {
-        currentUser.eliminatePokemon(pokemonId);
-        await GameService.updateEliminatedPokemon(
+        currentUser.eliminateCharacter(characterId);
+        await GameService.updateEliminatedCharacters(
           _gameState!.gameCode,
           _playerId!,
-          currentUser.eliminatedPokemonIds,
+          currentUser.eliminatedCharacterIds,
         );
       }
     } catch (e) {
-      _setError('Failed to eliminate Pokemon: $e');
+      _setError('Failed to eliminate character: $e');
     }
   }
 
-  Future<void> unEliminatePokemon(int pokemonId) async {
+  Future<void> unEliminateCharacter(int characterId) async {
     if (_gameState == null || _playerId == null) return;
 
     try {
       final currentUser = this.currentUser;
       if (currentUser != null) {
-        currentUser.unEliminatePokemon(pokemonId);
-        await GameService.updateEliminatedPokemon(
+        currentUser.unEliminateCharacter(characterId);
+        await GameService.updateEliminatedCharacters(
           _gameState!.gameCode,
           _playerId!,
-          currentUser.eliminatedPokemonIds,
+          currentUser.eliminatedCharacterIds,
         );
       }
     } catch (e) {
-      _setError('Failed to un-eliminate Pokemon: $e');
+      _setError('Failed to un-eliminate character: $e');
     }
   }
 

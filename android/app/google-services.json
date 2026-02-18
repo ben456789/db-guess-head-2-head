@@ -1,22 +1,22 @@
 {
   "project_info": {
-    "project_number": "656639392887",
-    "firebase_url": "https://poke-guess-head-to-head-2c305-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "poke-guess-head-to-head-2c305",
-    "storage_bucket": "poke-guess-head-to-head-2c305.firebasestorage.app"
+    "project_number": "508271215587",
+    "firebase_url": "https://db-guess-head-to-head-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "db-guess-head-to-head",
+    "storage_bucket": "db-guess-head-to-head.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:656639392887:android:bfe6d366f8fa566b0e9a72",
+        "mobilesdk_app_id": "1:508271215587:android:78bd5bea02069a0b4896d6",
         "android_client_info": {
-          "package_name": "com.frontendben.poke_guess_head_2_head"
+          "package_name": "com.example.db_guess_head_2_head"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB03HibvbQ6O5hmWkN4kEZNTfQcCSz6DY8"
+          "current_key": "AIzaSyBYM-gnkd2x0oH_7eY-CwIKBYWflhNSr5A"
         }
       ],
       "services": {

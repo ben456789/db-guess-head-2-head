@@ -14,7 +14,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter/foundation.dart';
 import '../widgets/banner_ad_widget.dart';
 import 'widgets/settings_modal.dart';
-import 'l10n/app_localizations.dart';
 import 'widgets/character_fact_widget.dart';
 
 void main() async {
@@ -103,7 +102,11 @@ class WelcomeScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E90FF), Color(0xFF1C7ED6), Color(0xFF1864AB)],
+            colors: [
+              Color.fromARGB(255, 255, 120, 30),
+              Color.fromARGB(255, 214, 133, 28),
+              Color.fromARGB(255, 171, 83, 24),
+            ],
           ),
         ),
         height: MediaQuery.of(context).size.height,
@@ -337,8 +340,6 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      // Pokémon fact (English only)
-                      const PokemonFactWidget(),
                     ],
                   ),
                 ),
@@ -347,10 +348,7 @@ class WelcomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: Colors.transparent,
-        child: const SafeArea(child: BannerAdWidget()),
-      ),
+      //child: const SafeArea(child: BannerAdWidget()),
     );
   }
 }

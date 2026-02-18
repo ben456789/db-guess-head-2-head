@@ -101,7 +101,7 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<GameState?> startGame({int characterCount = 36}) async {
+  Future<GameState?> startGame() async {
     if (_playerId == null || _playerName == null) {
       _setError('Player info missing');
       return null;
@@ -120,9 +120,7 @@ class GameProvider extends ChangeNotifier {
       );
 
       // Load characters
-      final characters = await CharacterService.getMultipleRandomCharacters(
-        characterCount,
-      );
+      final characters = await CharacterService.getMultipleRandomCharacters();
       await GameService.setCharacters(_gameState!.gameCode, characters);
 
       // Reset eliminated characters for this user
@@ -138,10 +136,7 @@ class GameProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createGame(
-    List<int> selectedCategories, {
-    int characterCount = 36,
-  }) async {
+  Future<void> createGame(List<int> selectedCategories) async {
     if (_playerId == null || _playerName == null) return;
 
     _setLoading(true);
@@ -154,11 +149,18 @@ class GameProvider extends ChangeNotifier {
         selectedCategories,
       );
 
-      // Load characters
-      final characters = await CharacterService.getMultipleRandomCharacters(
-        characterCount,
-      );
-      await GameService.setCharacters(_gameState!.gameCode, characters);
+      // Load characters — if the external API fails (e.g. CORS on web)
+      // we still let the game be created and try the fetch silently.
+      try {
+        final characters = await CharacterService.getMultipleRandomCharacters();
+        await GameService.setCharacters(_gameState!.gameCode, characters);
+      } catch (charError) {
+        // Characters failed to load (common on web due to CORS).
+        // The game node is already created in Firebase; characters will be
+        // empty. Log but don't block game creation.
+        // ignore: avoid_print
+        print('WARNING: Failed to load characters: $charError');
+      }
 
       // Reset eliminated characters for this user
       await updateEliminatedCharacterIds([]);
@@ -166,6 +168,7 @@ class GameProvider extends ChangeNotifier {
       _listenToGameChanges(_gameState!.gameCode);
     } catch (e) {
       _setError('Failed to create game: $e');
+      rethrow;
     } finally {
       _setLoading(false);
     }
@@ -472,11 +475,7 @@ class GameProvider extends ChangeNotifier {
 
       // Only the host generates new characters to avoid duplicates
       if (isHost) {
-        // Use the same character count as the current game
-        final characterCount = _gameState!.availableCharacters.length;
-        final characters = await CharacterService.getMultipleRandomCharacters(
-          characterCount,
-        );
+        final characters = await CharacterService.getMultipleRandomCharacters();
 
         // Randomly select first player for the new round
         final playerIds = _gameState!.players.keys.toList();
@@ -493,9 +492,6 @@ class GameProvider extends ChangeNotifier {
           'createdAt': DateTime.now()
               .millisecondsSinceEpoch, // Refresh timestamp to prevent cleanup
           'availableCharacters': characters.map((c) => c.toJson()).toList(),
-          'availablePokemon': characters
-              .map((c) => c.toJson())
-              .toList(), // Backwards compatibility
           'currentPlayerId': newFirstPlayerId, // Set new first player
         };
 

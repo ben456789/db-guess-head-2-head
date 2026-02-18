@@ -17,10 +17,7 @@ class CharacterService {
       final int randomId = _random.nextInt(totalCharacters) + 1;
 
       final response = await http
-          .get(
-            Uri.parse('$baseUrl/$randomId'),
-            headers: {'Content-Type': 'application/json'},
-          )
+          .get(Uri.parse('$baseUrl/$randomId?language=en'))
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
@@ -56,10 +53,7 @@ class CharacterService {
   static Future<Character> getCharacterById(int id) async {
     try {
       final response = await http
-          .get(
-            Uri.parse('$baseUrl/$id'),
-            headers: {'Content-Type': 'application/json'},
-          )
+          .get(Uri.parse('$baseUrl/$id?language=en'))
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
@@ -77,11 +71,8 @@ class CharacterService {
   static Future<List<Character>> getAllCharacters() async {
     try {
       final response = await http
-          .get(
-            Uri.parse('$baseUrl?limit=$totalCharacters'),
-            headers: {'Content-Type': 'application/json'},
-          )
-          .timeout(const Duration(seconds: 10));
+          .get(Uri.parse('$baseUrl?limit=$totalCharacters&language=en'))
+          .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -98,30 +89,11 @@ class CharacterService {
     }
   }
 
-  /// Fetches multiple random characters
-  static Future<List<Character>> getMultipleRandomCharacters(int count) async {
-    List<Character> characterList = [];
-    Set<int> usedIds = {};
-
-    // Limit count to available characters
-    final requestCount = count > totalCharacters ? totalCharacters : count;
-
-    while (characterList.length < requestCount) {
-      int randomId = _random.nextInt(totalCharacters) + 1;
-
-      if (!usedIds.contains(randomId)) {
-        usedIds.add(randomId);
-        try {
-          final character = await getCharacterById(randomId);
-          characterList.add(character);
-        } catch (e) {
-          // Skip this character if there's an error
-          continue;
-        }
-      }
-    }
-
-    return characterList;
+  /// Fetches all characters in a randomised order using a single API call.
+  static Future<List<Character>> getMultipleRandomCharacters() async {
+    final all = await getAllCharacters();
+    all.shuffle(_random);
+    return all;
   }
 
   /// Fetches characters by race (e.g., "Saiyan", "Human", "Namekian")

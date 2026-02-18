@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:vibration/vibration.dart';
 import '../providers/game_provider.dart';
 import '../models/game_state.dart';
-import '../models/pokemon.dart';
+import '../models/character.dart';
 import '../widgets/banner_ad_widget.dart';
 import '../widgets/interstitial_ad_widget.dart';
 import '../widgets/settings_modal.dart';
@@ -16,10 +16,10 @@ class GameOverScreen extends StatelessWidget {
 
   const GameOverScreen({super.key, required this.gameState});
 
-  // Helper to get Pokemon name in current locale
-  String _getLocalizedPokemonName(Pokemon pokemon, BuildContext context) {
+  // Helper to get Character name in current locale
+  String _getLocalizedCharacterName(Character character, BuildContext context) {
     final locale = Localizations.localeOf(context);
-    return pokemon.getLocalizedName(locale.languageCode);
+    return character.getLocalizedName(locale.languageCode);
   }
 
   @override
@@ -46,7 +46,11 @@ class GameOverScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E90FF), Color(0xFF1C7ED6), Color(0xFF1864AB)],
+            colors: [
+              Color.fromARGB(255, 255, 120, 30),
+              Color.fromARGB(255, 214, 133, 28),
+              Color.fromARGB(255, 171, 83, 24),
+            ],
           ),
         ),
         child: Scaffold(
@@ -121,8 +125,8 @@ class GameOverScreen extends StatelessWidget {
     }
 
     // Get both players' chosen character
-    final playerOneChosenPokemon = gameState.playerOne.chosenPokemon;
-    final playerTwoChosenPokemon = gameState.playerTwo?.chosenPokemon;
+    final playerOneChosenCharacter = gameState.playerOne.chosenCharacter;
+    final playerTwoChosenCharacter = gameState.playerTwo?.chosenCharacter;
 
     // Get both players' scores
     final playerOneScore = gameState.playerOne.score;
@@ -283,16 +287,16 @@ class GameOverScreen extends StatelessWidget {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Expanded(
-                                    child: _buildPokemonResultCard(
+                                    child: _buildCharacterResultCard(
                                       gameState.playerOne.name,
-                                      playerOneChosenPokemon,
+                                      playerOneChosenCharacter,
                                     ),
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(
-                                    child: _buildPokemonResultCard(
+                                    child: _buildCharacterResultCard(
                                       gameState.playerTwo?.name ?? 'Player 2',
-                                      playerTwoChosenPokemon,
+                                      playerTwoChosenCharacter,
                                     ),
                                   ),
                                 ],
@@ -513,7 +517,7 @@ class GameOverScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPokemonResultCard(String playerName, Pokemon? pokemon) {
+  Widget _buildCharacterResultCard(String playerName, Character? character) {
     return Builder(
       builder: (context) {
         return Card(
@@ -533,17 +537,17 @@ class GameOverScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
-                if (pokemon != null)
+                if (character != null)
                   Column(
                     children: [
                       CachedNetworkImage(
-                        imageUrl: pokemon.imageUrl,
+                        imageUrl: character.imageUrl,
                         height: 80,
                         fit: BoxFit.contain,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _getLocalizedPokemonName(pokemon, context),
+                        _getLocalizedCharacterName(character, context),
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,

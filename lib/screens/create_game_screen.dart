@@ -27,7 +27,6 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
   StreamSubscription? _gameStateSubscription;
   final Set<int> _selectedGenerations = {};
   final _gameCodeCardKey = GlobalKey();
-  int _characterCount = 36; // Default to 36 characters
 
   @override
   void dispose() {
@@ -46,44 +45,36 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
       return;
     }
 
-    if (_selectedGenerations.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.pleaseSelectGeneration),
-        ),
-      );
-      return;
-    }
-
-    /// Ensures the user is signed in anonymously if not already signed in.
-    Future<void> ensureSignedIn() async {
+    setState(() => _isCreating = true);
+    try {
+      // Ensure anonymous sign-in before creating the game
       final auth = FirebaseAuth.instance;
       if (auth.currentUser == null) {
         await auth.signInAnonymously();
       }
-    }
 
-    // Ensure user is authenticated
-    await ensureSignedIn();
+      // DEBUG: Print current Firebase Auth UID
+      print(
+        'DEBUG: FirebaseAuth.currentUser?.uid = '
+        '${FirebaseAuth.instance.currentUser?.uid}',
+      );
 
-    // DEBUG: Print current Firebase Auth UID
-    print(
-      'DEBUG: FirebaseAuth.currentUser?.uid = '
-      '${FirebaseAuth.instance.currentUser?.uid}',
-    );
-
-    setState(() => _isCreating = true);
-    try {
       gameProvider.setPlayerInfo(name);
       // Print the playerId from gameProvider (public getter)
       print('DEBUG: gameProvider.playerId = ${gameProvider.playerId}');
+
+      if (gameProvider.playerId == null) {
+        throw Exception(
+          'Authentication failed — could not get a user ID. '
+          'Please check that Anonymous Authentication is enabled in '
+          'the Firebase console for this project.',
+        );
+      }
+
       await gameProvider
-          .createGame(
-            _selectedGenerations.toList(),
-            characterCount: _characterCount,
-          )
+          .createGame(_selectedGenerations.toList())
           .timeout(
-            const Duration(seconds: 30),
+            const Duration(seconds: 60),
             onTimeout: () {
               throw TimeoutException(
                 'Game creation took too long. Please try again.',
@@ -160,7 +151,11 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF1E90FF), Color(0xFF1C7ED6), Color(0xFF1864AB)],
+          colors: [
+            Color.fromARGB(255, 255, 120, 30),
+            Color.fromARGB(255, 214, 133, 28),
+            Color.fromARGB(255, 171, 83, 24),
+          ],
         ),
       ),
       child: Scaffold(
@@ -238,150 +233,13 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                           counterStyle: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      Text(
-                        AppLocalizations.of(context)!.selectGenerations,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 8,
-                              crossAxisSpacing: 8,
-                              mainAxisExtent: 60,
-                            ),
-                        itemCount: 9,
-                        itemBuilder: (context, index) {
-                          final gen = index + 1;
-                          final regions = {
-                            1: 'Kanto',
-                            2: 'Johto',
-                            3: 'Hoenn',
-                            4: 'Sinnoh',
-                            5: 'Unova',
-                            6: 'Kalos',
-                            7: 'Alola',
-                            8: 'Galar',
-                            9: 'Paldea',
-                          };
-                          final region = regions[gen] ?? '';
-                          final isSelected = _selectedGenerations.contains(gen);
-                          return GestureDetector(
-                            onTap: () {
-                              _nameFocus.unfocus();
-                              setState(() {
-                                if (isSelected) {
-                                  _selectedGenerations.remove(gen);
-                                } else {
-                                  _selectedGenerations.add(gen);
-                                }
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? const Color(0xFF53E848)
-                                    : Colors.transparent,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? const Color(0xFF53E848)
-                                      : Colors.white,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${AppLocalizations.of(context)!.gen} $gen',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                    Text(
-                                      region,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        AppLocalizations.of(context)!.numberOfCharacters,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.white, width: 1),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 4,
-                        ),
-                        child: DropdownButton<int>(
-                          value: _characterCount,
-                          isExpanded: true,
-                          underline: const SizedBox(),
-                          dropdownColor: const Color(0xFF1C7ED6),
-                          icon: const Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.white,
-                          ),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          items: const [
-                            DropdownMenuItem(value: 36, child: Text('36')),
-                            DropdownMenuItem(value: 48, child: Text('48')),
-                            DropdownMenuItem(value: 64, child: Text('64')),
-                            DropdownMenuItem(value: 80, child: Text('80')),
-                          ],
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _characterCount = value;
-                              });
-                            }
-                          },
-                        ),
-                      ),
                       const SizedBox(height: 40),
                       ElevatedButton.icon(
                         onPressed: _isCreating
                             ? null
-                            : () {
+                            : () async {
                                 _nameFocus.unfocus();
-                                _createGame(gameProvider);
+                                await _createGame(gameProvider);
                               },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

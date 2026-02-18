@@ -4,20 +4,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/game_provider.dart';
 import '../models/game_state.dart';
-import '../models/pokemon.dart';
+import '../models/character.dart';
 import '../widgets/banner_ad_widget.dart';
 import '../widgets/settings_modal.dart';
 
-class PokemonSelectionScreen extends StatefulWidget {
+class CharacterSelectionScreen extends StatefulWidget {
   final GameState gameState;
 
-  const PokemonSelectionScreen({super.key, required this.gameState});
+  const CharacterSelectionScreen({super.key, required this.gameState});
 
   @override
-  State<PokemonSelectionScreen> createState() => _PokemonSelectionScreenState();
+  State<CharacterSelectionScreen> createState() =>
+      _CharacterSelectionScreenState();
 }
 
-class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
+class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
   void _showLeaveConfirmation(BuildContext context, GameProvider gameProvider) {
     showDialog(
       context: context,
@@ -48,9 +49,9 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
     );
   }
 
-  void _showPokemonConfirmation(
+  void _showCharacterConfirmation(
     BuildContext context,
-    Pokemon pokemon,
+    Character character,
     GameProvider gameProvider,
   ) {
     showDialog(
@@ -58,14 +59,14 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         title: Text(
-          _getLocalizedPokemonName(pokemon, context),
+          _getLocalizedCharacterName(character, context),
           style: const TextStyle(color: Colors.black),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             CachedNetworkImage(
-              imageUrl: pokemon.imageUrl,
+              imageUrl: character.imageUrl,
               height: 120,
               fit: BoxFit.contain,
             ),
@@ -83,7 +84,7 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () {
-              gameProvider.choosePokemon(pokemon);
+              gameProvider.choosePokemon(character);
               Navigator.pop(context);
             },
             child: Text(
@@ -104,7 +105,11 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF1E90FF), Color(0xFF1C7ED6), Color(0xFF1864AB)],
+          colors: [
+            Color.fromARGB(255, 255, 120, 30),
+            Color.fromARGB(255, 214, 133, 28),
+            Color.fromARGB(255, 171, 83, 24),
+          ],
         ),
       ),
       child: Scaffold(
@@ -186,25 +191,6 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
                 });
                 // --- End Persistent Snackbar Logic ---
 
-                // Compose generations text
-                final selectedGens = widget.gameState.selectedGenerations;
-                final genRanges = {
-                  1: [1, 151],
-                  2: [152, 251],
-                  3: [252, 386],
-                  4: [387, 493],
-                  5: [494, 649],
-                  6: [650, 721],
-                  7: [722, 809],
-                  8: [810, 898],
-                  9: [899, 1010],
-                };
-                final sortedGens =
-                    (selectedGens
-                        .where((g) => genRanges.containsKey(g))
-                        .toList()
-                      ..sort());
-
                 return Column(
                   children: [
                     const SizedBox(height: 8),
@@ -221,48 +207,6 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.generationsInGame,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 4,
-                            children: sortedGens.map((gen) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.gen} $gen',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
-                    ),
 
                     Expanded(
                       child: GridView.builder(
@@ -272,14 +216,15 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
                           crossAxisSpacing: 8,
                           childAspectRatio: 0.75,
                         ),
-                        itemCount: widget.gameState.availablePokemon.length,
+                        itemCount: widget.gameState.availableCharacters.length,
                         itemBuilder: (context, index) {
-                          final pokemon =
-                              widget.gameState.availablePokemon[index];
+                          final character =
+                              widget.gameState.availableCharacters[index];
                           final isSelected =
-                              currentPlayer?.chosenPokemon?.id == pokemon.id;
-                          return _buildPokemonTile(
-                            pokemon,
+                              currentPlayer?.chosenCharacter?.id ==
+                              character.id;
+                          return _buildCharacterTile(
+                            character,
                             gameProvider,
                             isSelected,
                           );
@@ -301,21 +246,21 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
     );
   }
 
-  // Helper to get Pokemon name in current locale
-  String _getLocalizedPokemonName(Pokemon pokemon, BuildContext context) {
+  // Helper to get Character name in current locale
+  String _getLocalizedCharacterName(Character character, BuildContext context) {
     final locale = Localizations.localeOf(context);
-    return pokemon.getLocalizedName(locale.languageCode);
+    return character.getLocalizedName(locale.languageCode);
   }
 
-  Widget _buildPokemonTile(
-    Pokemon pokemon,
+  Widget _buildCharacterTile(
+    Character character,
     GameProvider gameProvider,
     bool isSelected,
   ) {
     return GestureDetector(
       onTap: () {
         if (!isSelected) {
-          _showPokemonConfirmation(context, pokemon, gameProvider);
+          _showCharacterConfirmation(context, character, gameProvider);
         }
       },
       child: Card(
@@ -326,22 +271,26 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
           child: Stack(
             children: [
               Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     flex: 2,
-                    child: CachedNetworkImage(
-                      imageUrl: pokemon.imageUrl,
-                      fit: BoxFit.contain,
-                      placeholder: (context, url) =>
-                          const Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error_outline),
+                    child: Center(
+                      child: CachedNetworkImage(
+                        imageUrl: character.imageUrl,
+                        width: double.infinity,
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) =>
+                            const Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error_outline),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _getLocalizedPokemonName(pokemon, context),
+                    _getLocalizedCharacterName(character, context),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 10,
@@ -349,32 +298,6 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 2,
-                    children: pokemon.types.map((type) {
-                      final typeColor = _getTypeColor(type);
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: typeColor,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          _getLocalizedTypeName(type, context),
-                          style: const TextStyle(
-                            fontSize: 7,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    }).toList(),
                   ),
                 ],
               ),
@@ -400,91 +323,5 @@ class _PokemonSelectionScreenState extends State<PokemonSelectionScreen> {
         ),
       ),
     );
-  }
-
-  Color _getTypeColor(String type) {
-    switch (type.toLowerCase()) {
-      case 'normal':
-        return const Color(0xFFA8A878);
-      case 'fire':
-        return const Color(0xFFF08030);
-      case 'water':
-        return const Color(0xFF6890F0);
-      case 'grass':
-        return const Color(0xFF78C850);
-      case 'electric':
-        return const Color(0xFFF8D030);
-      case 'ice':
-        return const Color(0xFF98D8D8);
-      case 'fighting':
-        return const Color(0xFFC03028);
-      case 'poison':
-        return const Color(0xFFA040A0);
-      case 'ground':
-        return const Color(0xFFE0C068);
-      case 'flying':
-        return const Color(0xFFA890F0);
-      case 'psychic':
-        return const Color(0xFFF85888);
-      case 'bug':
-        return const Color(0xFFA8B820);
-      case 'rock':
-        return const Color(0xFFB8A038);
-      case 'ghost':
-        return const Color(0xFF705898);
-      case 'dragon':
-        return const Color(0xFF7038F8);
-      case 'dark':
-        return const Color(0xFF705848);
-      case 'steel':
-        return const Color(0xFFB8B8D0);
-      case 'fairy':
-        return const Color(0xFFEE99AC);
-      default:
-        return const Color(0xFF808080);
-    }
-  }
-
-  String _getLocalizedTypeName(String type, BuildContext context) {
-    switch (type.toLowerCase()) {
-      case 'normal':
-        return AppLocalizations.of(context)!.typeNormal;
-      case 'fire':
-        return AppLocalizations.of(context)!.typeFire;
-      case 'water':
-        return AppLocalizations.of(context)!.typeWater;
-      case 'grass':
-        return AppLocalizations.of(context)!.typeGrass;
-      case 'electric':
-        return AppLocalizations.of(context)!.typeElectric;
-      case 'ice':
-        return AppLocalizations.of(context)!.typeIce;
-      case 'fighting':
-        return AppLocalizations.of(context)!.typeFighting;
-      case 'poison':
-        return AppLocalizations.of(context)!.typePoison;
-      case 'ground':
-        return AppLocalizations.of(context)!.typeGround;
-      case 'flying':
-        return AppLocalizations.of(context)!.typeFlying;
-      case 'psychic':
-        return AppLocalizations.of(context)!.typePsychic;
-      case 'bug':
-        return AppLocalizations.of(context)!.typeBug;
-      case 'rock':
-        return AppLocalizations.of(context)!.typeRock;
-      case 'ghost':
-        return AppLocalizations.of(context)!.typeGhost;
-      case 'dragon':
-        return AppLocalizations.of(context)!.typeDragon;
-      case 'dark':
-        return AppLocalizations.of(context)!.typeDark;
-      case 'steel':
-        return AppLocalizations.of(context)!.typeSteel;
-      case 'fairy':
-        return AppLocalizations.of(context)!.typeFairy;
-      default:
-        return type[0].toUpperCase() + type.substring(1);
-    }
   }
 }

@@ -162,7 +162,7 @@ class _SetupScreenState extends State<SetupScreen> {
                 const SizedBox(height: 20),
 
                 // Banner Ad
-                const BannerAdWidget(),
+                //const BannerAdWidget(),
                 const SizedBox(height: 8),
               ],
             ),

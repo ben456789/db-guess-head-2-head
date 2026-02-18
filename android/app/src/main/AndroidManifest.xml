@@ -10,7 +10,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-8540464399341739~4483791321" />
         <activity
-            android:name="com.frontendben.poke_guess_head_2_head.MainActivity"
+            android:name="com.example.db_guess_head_2_head.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""

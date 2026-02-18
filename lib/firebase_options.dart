@@ -32,34 +32,33 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB03HibvbQ6O5hmWkN4kEZNTfQcCSz6DY8',
-    appId: '1:656639392887:web:YOUR_WEB_APP_ID',
-    messagingSenderId: '656639392887',
-    projectId: 'poke-guess-head-to-head-2c305',
-    authDomain: 'poke-guess-head-to-head-2c305.firebaseapp.com',
-    databaseURL:
-        'https://poke-guess-head-to-head-2c305-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'poke-guess-head-to-head-2c305.firebasestorage.app',
+    apiKey: 'AIzaSyBze4Ei4m0Jh8EN3XoRahCWTDVG-N1REKQ',
+    appId: '1:508271215587:web:8b3693190f97e4c44896d6',
+    messagingSenderId: '508271215587',
+    projectId: 'db-guess-head-to-head',
+    authDomain: 'db-guess-head-to-head.firebaseapp.com',
+    databaseURL: 'https://db-guess-head-to-head-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'db-guess-head-to-head.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB03HibvbQ6O5hmWkN4kEZNTfQcCSz6DY8',
     appId: '1:656639392887:android:bfe6d366f8fa566b0e9a72',
     messagingSenderId: '656639392887',
-    projectId: 'poke-guess-head-to-head-2c305',
+    projectId: 'db-guess-head-to-head',
     databaseURL:
-        'https://poke-guess-head-to-head-2c305-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'poke-guess-head-to-head-2c305.firebasestorage.app',
+        'https://db-guess-head-to-head-default-rtdb.europe-west1.firebasedatabase.app/',
+    storageBucket: 'db-guess-head-to-head.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCjRmIBnXb9Sf8Rl9Vpv7GG0qGO2vrKrcQ',
     appId: '1:656639392887:ios:bfc047349fac3d740e9a72',
     messagingSenderId: '656639392887',
-    projectId: 'poke-guess-head-to-head-2c305',
+    projectId: 'db-guess-head-to-head',
     databaseURL:
-        'https://poke-guess-head-to-head-2c305-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'poke-guess-head-to-head-2c305.firebasestorage.app',
-    iosBundleId: 'com.frontendben.pokeGuessHead2Head',
+        'https://db-guess-head-to-head-default-rtdb.europe-west1.firebasedatabase.app/',
+    storageBucket: 'db-guess-head-to-head.appspot.com',
+    iosBundleId: 'com.frontendben.dbGuessHead2Head',
   );
 }

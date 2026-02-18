@@ -6,8 +6,8 @@ import 'package:vibration/vibration.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/game_provider.dart';
 import '../models/game_state.dart';
-import '../models/pokemon.dart';
-import 'pokemon_selection_screen.dart';
+import '../models/character.dart';
+import 'character_selection_screen.dart';
 import 'game_over_screen.dart';
 import '../widgets/banner_ad_widget.dart';
 import '../widgets/settings_modal.dart';
@@ -34,8 +34,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   String? _firstPlayerName;
   final ScrollController _chatScrollController = ScrollController();
   bool _userScrolledUp = false;
-  // Removed local _eliminatedPokemonIds. Always use backend value.
-  bool _hideEliminatedPokemon = false; // Toggle to hide eliminated Pokemon
+  // Removed local _eliminatedCharacterIds. Always use backend value.
+  bool _hideEliminatedCharacters =
+      false; // Toggle to hide eliminated Characters
   bool _chatModalOpen = false; // Track if chat modal is open
   bool _answerButtonsEnabled = false;
 
@@ -47,45 +48,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   // Removed _sendingAnswer: no longer tracking answer sending state
 
-  // Helper to get Pokemon name in current locale
-  String _getLocalizedPokemonName(Pokemon pokemon, BuildContext context) {
+  // Helper to get Character name in current locale
+  String _getLocalizedCharacterName(Character character, BuildContext context) {
     final locale = Localizations.localeOf(context);
-    return pokemon.getLocalizedName(locale.languageCode);
+    return character.getLocalizedName(locale.languageCode);
   }
 
-  // Helper to get localized name for an evolution member
-  String _getLocalizedEvolutionName(
-    EvolutionMember evolution,
+  // Helper to get localized name for a transformation member
+  String _getLocalizedTransformationName(
+    TransformationMember transformation,
     BuildContext context,
   ) {
-    final locale = Localizations.localeOf(context);
-    final languageCode = locale.languageCode;
-
-    // Prefer localized names stored on the evolution member itself
-    final localizedNames = evolution.localizedNames;
-    if (localizedNames != null && localizedNames.containsKey(languageCode)) {
-      return localizedNames[languageCode]!;
-    }
-    if (localizedNames != null && localizedNames.containsKey('en')) {
-      return localizedNames['en']!;
-    }
-
-    // Fallback: try to find a matching Pokemon in the current game list
-    final gameProvider = context.read<GameProvider>();
-    final gameState = gameProvider.gameState;
-    if (gameState != null) {
-      try {
-        final pokemon = gameState.availablePokemon.firstWhere(
-          (p) => p.id == evolution.id,
-        );
-        return _getLocalizedPokemonName(pokemon, context);
-      } catch (_) {
-        // Ignore and fall through to final fallback
-      }
-    }
-
-    // Final fallback to capitalized English name
-    final name = evolution.name;
+    // Dragon Ball transformations don't have localized names
+    // Return the capitalized name
+    final name = transformation.name;
     if (name.isEmpty) return name;
     return name[0].toUpperCase() + name.substring(1);
   }
@@ -303,147 +279,149 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF1a8fe3),
-        body: Consumer<GameProvider>(
-          builder: (context, gameProvider, child) {
-            final gameState = gameProvider.gameState;
-            // Always get eliminatedPokemonIds from backend (current player)
-            List<int> eliminatedPokemonIds = [];
-            if (gameState != null) {
-              final currentPlayer =
-                  (gameState.playerOne.id == gameProvider.playerId)
-                  ? gameState.playerOne
-                  : gameState.playerTwo;
-              eliminatedPokemonIds = currentPlayer?.eliminatedPokemonIds ?? [];
-            }
-            // Reset modal flag when entering character selection phase
-            if (gameState != null &&
-                gameState.currentPhase == GamePhase.pokemonSelection &&
-                _showFirstPlayerModal) {
-              _showFirstPlayerModal = false;
-            }
-
-            // Show modal when game starts or rematch occurs and first player is selected
-            if (gameState != null &&
-                gameState.currentPhase == GamePhase.inGame &&
-                !_showFirstPlayerModal) {
-              _showFirstPlayerModal = true;
-              final firstPlayer = gameState.players[gameState.currentPlayerId];
-              _firstPlayerName = firstPlayer?.name ?? "Unknown";
-              WidgetsBinding.instance.addPostFrameCallback((_) async {
-                final dialogContext = context;
-                if (!mounted) return;
-                showGeneralDialog(
-                  context: dialogContext,
-                  barrierDismissible: false,
-                  barrierColor: Colors.black54,
-                  transitionDuration: const Duration(milliseconds: 200),
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return Center(
-                      child: Material(
-                        color: Colors.transparent,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                _firstPlayerName == gameProvider.playerName
-                                    ? Icons.looks_one
-                                    : Icons.looks_two,
-                                size: 48,
-                                color: Colors.orange,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                _firstPlayerName == gameProvider.playerName
-                                    ? AppLocalizations.of(context)!.youGoFirst
-                                    : AppLocalizations.of(
-                                        context,
-                                      )!.playerGoesFirst(_firstPlayerName!),
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
+        backgroundColor: Colors.transparent,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromARGB(255, 255, 120, 30),
+                Color.fromARGB(255, 214, 133, 28),
+                Color.fromARGB(255, 171, 83, 24),
+              ],
+            ),
+          ),
+          child: Consumer<GameProvider>(
+            builder: (context, gameProvider, child) {
+              final gameState = gameProvider.gameState;
+              List<int> eliminatedCharacterIds = [];
+              if (gameState != null) {
+                final currentPlayer =
+                    (gameState.playerOne.id == gameProvider.playerId)
+                    ? gameState.playerOne
+                    : gameState.playerTwo;
+                eliminatedCharacterIds =
+                    currentPlayer?.eliminatedCharacterIds ?? [];
+              }
+              if (gameState != null &&
+                  gameState.currentPhase == GamePhase.characterSelection &&
+                  _showFirstPlayerModal) {
+                _showFirstPlayerModal = false;
+              }
+              if (gameState != null &&
+                  gameState.currentPhase == GamePhase.inGame &&
+                  !_showFirstPlayerModal) {
+                _showFirstPlayerModal = true;
+                final firstPlayer =
+                    gameState.players[gameState.currentPlayerId];
+                _firstPlayerName = firstPlayer?.name ?? "Unknown";
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  final dialogContext = context;
+                  if (!mounted) return;
+                  showGeneralDialog(
+                    context: dialogContext,
+                    barrierDismissible: false,
+                    barrierColor: Colors.black54,
+                    transitionDuration: const Duration(milliseconds: 200),
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      return Center(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  _firstPlayerName == gameProvider.playerName
+                                      ? Icons.looks_one
+                                      : Icons.looks_two,
+                                  size: 48,
+                                  color: Colors.orange,
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                                const SizedBox(height: 16),
+                                Text(
+                                  _firstPlayerName == gameProvider.playerName
+                                      ? AppLocalizations.of(context)!.youGoFirst
+                                      : AppLocalizations.of(
+                                          context,
+                                        )!.playerGoesFirst(_firstPlayerName!),
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
-                await Future.delayed(const Duration(seconds: 3));
-                if (!mounted) return;
-                Navigator.of(dialogContext, rootNavigator: true).pop();
-              });
-            }
-
-            // Check if game was deleted while we had it
-            if (gameState == null &&
-                _hadGameState &&
-                !_userInitiatedLeave &&
-                mounted) {
-              // Game was deleted by opponent
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context)!.opponentLeft),
-                      duration: const Duration(seconds: 2),
-                    ),
+                      );
+                    },
                   );
-                  Future.delayed(const Duration(seconds: 2), () {
-                    if (!mounted) return;
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  });
-                }
-              });
-              _hadGameState = false; // Reset to avoid showing multiple times
-            }
-
-            if (gameState != null) {
-              _hadGameState = true;
-            }
-
-            if (gameState == null) {
-              // Null state: return to homepage
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                }
-              });
-              return const SizedBox.shrink();
-            }
-
-            if (gameState.currentPhase == GamePhase.gameOver) {
-              // Close chat modal if it's still open
-              if (_chatModalOpen && mounted) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (_chatModalOpen && mounted) {
-                    _chatModalOpen = false;
-                    Navigator.of(context).pop();
-                  }
+                  await Future.delayed(const Duration(seconds: 3));
+                  if (!mounted) return;
+                  Navigator.of(dialogContext, rootNavigator: true).pop();
                 });
               }
-              return GameOverScreen(gameState: gameState);
-            }
-
-            if (gameState.currentPhase == GamePhase.pokemonSelection) {
-              return PokemonSelectionScreen(gameState: gameState);
-            }
-
-            if (gameState.currentPhase == GamePhase.roundResult) {
-              return _buildResultScreen(gameState);
-            }
-
-            return _buildGuessingScreen(gameState, gameProvider);
-          },
+              if (gameState == null &&
+                  _hadGameState &&
+                  !_userInitiatedLeave &&
+                  mounted) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context)!.opponentLeft,
+                        ),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                    Future.delayed(const Duration(seconds: 2), () {
+                      if (!mounted) return;
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    });
+                  }
+                });
+                _hadGameState = false;
+              }
+              if (gameState != null) {
+                _hadGameState = true;
+              }
+              if (gameState == null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
+                });
+                return const SizedBox.shrink();
+              }
+              if (gameState.currentPhase == GamePhase.gameOver) {
+                if (_chatModalOpen && mounted) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (_chatModalOpen && mounted) {
+                      _chatModalOpen = false;
+                      Navigator.of(context).pop();
+                    }
+                  });
+                }
+                return GameOverScreen(gameState: gameState);
+              }
+              if (gameState.currentPhase == GamePhase.characterSelection) {
+                return CharacterSelectionScreen(gameState: gameState);
+              }
+              if (gameState.currentPhase == GamePhase.roundResult) {
+                return _buildResultScreen(gameState);
+              }
+              return _buildGuessingScreen(gameState, gameProvider);
+            },
+          ),
         ),
       ),
     );
@@ -491,10 +469,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     // Determine if device is a tablet
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
     return Scaffold(
-      backgroundColor: const Color(0xFF1a8fe3),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.guessTheCharacter),
-        backgroundColor: const Color(0xFF1a8fe3),
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
@@ -515,19 +493,29 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         ],
       ),
       body: Container(
-        color: const Color(0xFF1a8fe3),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(255, 255, 120, 30),
+              Color.fromARGB(255, 214, 133, 28),
+              Color.fromARGB(255, 171, 83, 24),
+            ],
+          ),
+        ),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Top cards: selected Pokemon + quick chat entry
+                // Top cards: selected Character + quick chat entry
                 Row(
                   children: [
                     Expanded(
                       child: SizedBox(
                         height: 171,
-                        child: _buildSelectedPokemonDisplay(gameState),
+                        child: _buildSelectedCharacterDisplay(gameState),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -764,11 +752,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                               ),
                             ),
                             Checkbox(
-                              value: _hideEliminatedPokemon,
+                              value: _hideEliminatedCharacters,
                               onChanged: (value) {
                                 if (!mounted) return;
                                 setState(() {
-                                  _hideEliminatedPokemon = value ?? false;
+                                  _hideEliminatedCharacters = value ?? false;
                                 });
                               },
                               fillColor: WidgetStateProperty.all(Colors.white),
@@ -785,16 +773,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             if (gameState == null)
                               return const SizedBox.shrink();
 
-                            // Get opponent's eliminated Pokemon count
+                            // Get opponent's eliminated Character count
                             final opponentPlayer =
                                 (gameState.playerOne.id ==
                                     gameProvider.playerId)
                                 ? gameState.playerTwo
                                 : gameState.playerOne;
                             final opponentEliminatedIds =
-                                opponentPlayer?.eliminatedPokemonIds ?? [];
+                                opponentPlayer?.eliminatedCharacterIds ?? [];
                             final opponentRemainingCount =
-                                gameState.availablePokemon.length -
+                                gameState.availableCharacters.length -
                                 opponentEliminatedIds.length;
 
                             final opponentName =
@@ -816,18 +804,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                // Grid of available pokemon
+                // Grid of available characters
                 Consumer<GameProvider>(
                   builder: (context, gameProvider, child) {
                     final gameState = gameProvider.gameState;
-                    List<int> eliminatedPokemonIds = [];
+                    List<int> eliminatedCharacterIds = [];
                     if (gameState != null) {
                       final currentPlayer =
                           (gameState.playerOne.id == gameProvider.playerId)
                           ? gameState.playerOne
                           : gameState.playerTwo;
-                      eliminatedPokemonIds =
-                          currentPlayer?.eliminatedPokemonIds ?? [];
+                      eliminatedCharacterIds =
+                          currentPlayer?.eliminatedCharacterIds ?? [];
                     }
                     return Expanded(
                       child: GridView.builder(
@@ -838,21 +826,23 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           childAspectRatio: 0.75,
                         ),
                         padding: EdgeInsets.zero,
-                        itemCount: _hideEliminatedPokemon
-                            ? gameState?.availablePokemon
+                        itemCount: _hideEliminatedCharacters
+                            ? gameState?.availableCharacters
                                   .where(
-                                    (p) => !eliminatedPokemonIds.contains(p.id),
+                                    (c) =>
+                                        !eliminatedCharacterIds.contains(c.id),
                                   )
                                   .length
-                            : gameState?.availablePokemon.length,
+                            : gameState?.availableCharacters.length,
                         itemBuilder: (context, index) {
-                          List<Pokemon> sortedList;
-                          if (_hideEliminatedPokemon) {
+                          List<Character> sortedList;
+                          if (_hideEliminatedCharacters) {
                             sortedList =
-                                gameState?.availablePokemon
+                                gameState?.availableCharacters
                                     .where(
-                                      (p) =>
-                                          !eliminatedPokemonIds.contains(p.id),
+                                      (c) => !eliminatedCharacterIds.contains(
+                                        c.id,
+                                      ),
                                     )
                                     .toList() ??
                                 [];
@@ -860,25 +850,30 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             // Sort: non-eliminated first, then eliminated in reverse order
                             // (first eliminated appears last in grid)
                             final nonEliminated =
-                                gameState?.availablePokemon
+                                gameState?.availableCharacters
                                     .where(
-                                      (p) =>
-                                          !eliminatedPokemonIds.contains(p.id),
+                                      (c) => !eliminatedCharacterIds.contains(
+                                        c.id,
+                                      ),
                                     )
                                     .toList() ??
                                 [];
                             final eliminated =
-                                gameState?.availablePokemon
+                                gameState?.availableCharacters
                                     .where(
-                                      (p) =>
-                                          eliminatedPokemonIds.contains(p.id),
+                                      (c) =>
+                                          eliminatedCharacterIds.contains(c.id),
                                     )
                                     .toList() ??
                                 [];
                             // Sort eliminated by their elimination order, then reverse
                             eliminated.sort((a, b) {
-                              final indexA = eliminatedPokemonIds.indexOf(a.id);
-                              final indexB = eliminatedPokemonIds.indexOf(b.id);
+                              final indexA = eliminatedCharacterIds.indexOf(
+                                a.id,
+                              );
+                              final indexB = eliminatedCharacterIds.indexOf(
+                                b.id,
+                              );
                               return indexA.compareTo(indexB);
                             });
                             sortedList = [
@@ -886,14 +881,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                               ...eliminated.reversed,
                             ];
                           }
-                          final poke = sortedList[index];
-                          final isEliminated = eliminatedPokemonIds.contains(
-                            poke.id,
+                          final character = sortedList[index];
+                          final isEliminated = eliminatedCharacterIds.contains(
+                            character.id,
                           );
-                          return _buildPokemonGridItem(
-                            poke,
+                          return _buildCharacterGridItem(
+                            character,
                             isEliminated,
-                            eliminatedPokemonIds,
+                            eliminatedCharacterIds,
                           );
                         },
                       ),
@@ -912,10 +907,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildPokemonGridItem(
-    Pokemon pokemon,
+  Widget _buildCharacterGridItem(
+    Character character,
     bool isEliminated,
-    List<int> eliminatedPokemonIds,
+    List<int> eliminatedCharacterIds,
   ) {
     return Card(
       elevation: 2,
@@ -928,69 +923,51 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       ),
       child: Stack(
         children: [
-          Opacity(
-            opacity: isEliminated ? 0.4 : 1.0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: CachedNetworkImage(
-                      imageUrl: pokemon.imageUrl,
-                      fit: BoxFit.contain,
+          Center(
+            child: Opacity(
+              opacity: isEliminated ? 0.4 : 1.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: CachedNetworkImage(
+                          imageUrl: character.imageUrl,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(
-                    _getLocalizedPokemonName(pokemon, context),
-                    style: const TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Center(
+                      child: Text(
+                        _getLocalizedCharacterName(character, context),
+                        style: const TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 4,
-                    right: 4,
-                    top: 2,
-                    bottom: 8,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 4,
+                      right: 4,
+                      top: 2,
+                      bottom: 8,
+                    ),
                   ),
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 4,
-                    runSpacing: 2,
-                    children: pokemon.types.map((type) {
-                      final label = _getLocalizedTypeName(type, context);
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _getTypeColor(type),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          label,
-                          style: const TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           // Elimination toggle icon (top-left)
@@ -1001,14 +978,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               onTap: () async {
                 if (!mounted) return;
                 final gameProvider = context.read<GameProvider>();
-                // Always use backend value, so create a new list based on backend
-                List<int> newEliminated = List<int>.from(eliminatedPokemonIds);
-                if (eliminatedPokemonIds.contains(pokemon.id)) {
-                  newEliminated.remove(pokemon.id);
+                List<int> newEliminated = List<int>.from(
+                  eliminatedCharacterIds,
+                );
+                if (eliminatedCharacterIds.contains(character.id)) {
+                  newEliminated.remove(character.id);
                 } else {
-                  newEliminated.add(pokemon.id);
+                  newEliminated.add(character.id);
                 }
-                await gameProvider.updateEliminatedPokemonIds(newEliminated);
+                await gameProvider.updateEliminatedCharacterIds(newEliminated);
               },
               child: Container(
                 width: 24,
@@ -1032,7 +1010,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             top: 5,
             right: 5,
             child: GestureDetector(
-              onTap: () => _showPokemonInfo(pokemon),
+              onTap: () => _showCharacterInfo(character),
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -1552,18 +1530,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   void _showGuessPicker(GameProvider gameProvider, GameState gameState) {
     final rootContext = context;
-    // Always get eliminatedPokemonIds from backend (current player)
-    List<int> eliminatedPokemonIds = [];
+    // Always get eliminatedCharacterIds from backend (current player)
+    List<int> eliminatedCharacterIds = [];
     final gameProvider = context.read<GameProvider>();
     final currentPlayer = (gameState.playerOne.id == gameProvider.playerId)
         ? gameState.playerOne
         : gameState.playerTwo;
-    eliminatedPokemonIds = currentPlayer?.eliminatedPokemonIds ?? [];
-    final remainingPokemon = gameState.availablePokemon
-        .where((p) => !eliminatedPokemonIds.contains(p.id))
+    eliminatedCharacterIds = currentPlayer?.eliminatedCharacterIds ?? [];
+    final remainingCharacter = gameState.availableCharacters
+        .where((p) => !eliminatedCharacterIds.contains(p.id))
         .toList();
 
-    if (remainingPokemon.isEmpty) {
+    if (remainingCharacter.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.noAvailableCharacter),
@@ -1586,7 +1564,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFF1a8fe3), Color(0xFF1976d2)],
+              colors: [
+                Color.fromARGB(255, 255, 120, 30),
+                Color.fromARGB(255, 214, 133, 28),
+                Color.fromARGB(255, 171, 83, 24),
+              ],
             ),
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
@@ -1619,11 +1601,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               const SizedBox(height: 8),
               Expanded(
                 child: ListView.separated(
-                  itemCount: remainingPokemon.length,
+                  itemCount: remainingCharacter.length,
                   separatorBuilder: (context, index) =>
                       const Divider(color: Colors.white12, height: 1),
                   itemBuilder: (context, index) {
-                    final poke = remainingPokemon[index];
+                    final character = remainingCharacter[index];
                     return ListTile(
                       leading: Container(
                         width: 44,
@@ -1636,19 +1618,19 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: CachedNetworkImage(
-                            imageUrl: poke.imageUrl,
+                            imageUrl: character.imageUrl,
                             fit: BoxFit.contain,
                           ),
                         ),
                       ),
                       title: Text(
-                        _getLocalizedPokemonName(poke, rootContext),
+                        _getLocalizedCharacterName(character, rootContext),
                         style: const TextStyle(color: Colors.white),
                       ),
                       onTap: () async {
                         if (!mounted) return;
-                        final localizedName = _getLocalizedPokemonName(
-                          poke,
+                        final localizedName = _getLocalizedCharacterName(
+                          character,
                           rootContext,
                         );
                         final confirm = await showDialog<bool>(
@@ -1678,8 +1660,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         if (confirm != true) return;
                         Navigator.pop(sheetContext);
                         try {
-                          final localizedName = _getLocalizedPokemonName(
-                            poke,
+                          final localizedName = _getLocalizedCharacterName(
+                            character,
                             rootContext,
                           );
                           final localizedQuestion = AppLocalizations.of(
@@ -1690,7 +1672,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           )!.no;
 
                           final isCorrect = await gameProvider.submitGuess(
-                            poke,
+                            character,
                             localizedQuestion,
                             localizedNo,
                           );
@@ -1706,7 +1688,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                               ScaffoldMessenger.of(rootContext).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Guessing ${poke.capitalizedName}...',
+                                    'Guessing ${character.capitalizedName}...',
                                   ),
                                   duration: const Duration(seconds: 1),
                                   backgroundColor: Colors.blue,
@@ -1846,7 +1828,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildSelectedPokemonDisplay(GameState gameState) {
+  Widget _buildSelectedCharacterDisplay(GameState gameState) {
     // Get current user's player data
     final gameProvider = context.read<GameProvider>();
     final currentUserId = gameProvider.playerId;
@@ -1870,18 +1852,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               ),
             ),
             const SizedBox(height: 8),
-            _buildSelectedPokemonCard(currentPlayer?.chosenPokemon),
+            _buildSelectedCharacterCard(currentPlayer?.chosenCharacter),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSelectedPokemonCard(Pokemon? pokemon) {
+  Widget _buildSelectedCharacterCard(Character? character) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (pokemon != null)
+        if (Character != null)
           Stack(
             clipBehavior: Clip.none,
             children: [
@@ -1902,7 +1884,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           ),
                         )
                       : CachedNetworkImage(
-                          imageUrl: pokemon.imageUrl,
+                          imageUrl: character!.imageUrl,
                           fit: BoxFit.contain,
                         ),
                 ),
@@ -1915,7 +1897,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   right: 0,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () => _showPokemonInfo(pokemon),
+                    onTap: () => _showCharacterInfo(character!),
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: const BoxDecoration(
@@ -1966,33 +1948,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 ),
               ),
             ],
-          )
-        else
-          const SizedBox(
-            height: 68,
-            width: 68,
-            child: Center(
-              child: Icon(Icons.help_outline, color: Colors.black26),
-            ),
           ),
-
-        const SizedBox(height: 4),
-
-        Text(
-          _hideSelectedCharacter
-              ? ''
-              : (pokemon != null
-                    ? _getLocalizedPokemonName(pokemon, context)
-                    : '?'),
-          style: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-        ),
       ],
     );
   }
@@ -2018,93 +1974,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     );
   }
 
-  String _getLocalizedTypeName(String type, BuildContext context) {
-    switch (type.toLowerCase()) {
-      case 'normal':
-        return AppLocalizations.of(context)!.typeNormal;
-      case 'fire':
-        return AppLocalizations.of(context)!.typeFire;
-      case 'water':
-        return AppLocalizations.of(context)!.typeWater;
-      case 'grass':
-        return AppLocalizations.of(context)!.typeGrass;
-      case 'electric':
-        return AppLocalizations.of(context)!.typeElectric;
-      case 'ice':
-        return AppLocalizations.of(context)!.typeIce;
-      case 'fighting':
-        return AppLocalizations.of(context)!.typeFighting;
-      case 'poison':
-        return AppLocalizations.of(context)!.typePoison;
-      case 'ground':
-        return AppLocalizations.of(context)!.typeGround;
-      case 'flying':
-        return AppLocalizations.of(context)!.typeFlying;
-      case 'psychic':
-        return AppLocalizations.of(context)!.typePsychic;
-      case 'bug':
-        return AppLocalizations.of(context)!.typeBug;
-      case 'rock':
-        return AppLocalizations.of(context)!.typeRock;
-      case 'ghost':
-        return AppLocalizations.of(context)!.typeGhost;
-      case 'dragon':
-        return AppLocalizations.of(context)!.typeDragon;
-      case 'dark':
-        return AppLocalizations.of(context)!.typeDark;
-      case 'steel':
-        return AppLocalizations.of(context)!.typeSteel;
-      case 'fairy':
-        return AppLocalizations.of(context)!.typeFairy;
-      default:
-        return type[0].toUpperCase() + type.substring(1);
-    }
-  }
-
-  Color _getTypeColor(String type) {
-    switch (type.toLowerCase()) {
-      case 'normal':
-        return const Color(0xFFA8A878);
-      case 'fire':
-        return const Color(0xFFF08030);
-      case 'water':
-        return const Color(0xFF6890F0);
-      case 'grass':
-        return const Color(0xFF78C850);
-      case 'electric':
-        return const Color(0xFFF8D030);
-      case 'ice':
-        return const Color(0xFF98D8D8);
-      case 'fighting':
-        return const Color(0xFFC03028);
-      case 'poison':
-        return const Color(0xFFA040A0);
-      case 'ground':
-        return const Color(0xFFE0C068);
-      case 'flying':
-        return const Color(0xFFA890F0);
-      case 'psychic':
-        return const Color(0xFFF85888);
-      case 'bug':
-        return const Color(0xFFA8B820);
-      case 'rock':
-        return const Color(0xFFB8A038);
-      case 'ghost':
-        return const Color(0xFF705898);
-      case 'dragon':
-        return const Color(0xFF7038F8);
-      case 'dark':
-        return const Color(0xFF705848);
-      case 'steel':
-        return const Color(0xFFB8B8D0);
-      case 'fairy':
-        return const Color(0xFFEE99AC);
-      default:
-        return const Color(0xFF808080);
-    }
-  }
-
-  void _showPokemonInfo(Pokemon pokemon) {
+  void _showCharacterInfo(Character character) {
     final scrollController = ScrollController();
     showDialog(
       context: context,
@@ -2119,356 +1989,152 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Title
-                        Row(
-                          children: [
-                            const SizedBox(width: 4),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      '#${pokemon.id}',
-                                      style: const TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      _getLocalizedPokemonName(
-                                        pokemon,
-                                        context,
-                                      ),
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  '${AppLocalizations.of(context)!.gen} '
-                                  // Use the static map logic if generation is null
-                                  '${pokemon.generation ?? (() {
-                                        const generationRanges = {
-                                          1: [1, 151],
-                                          2: [152, 251],
-                                          3: [252, 386],
-                                          4: [387, 493],
-                                          5: [494, 649],
-                                          6: [650, 721],
-                                          7: [722, 809],
-                                          8: [810, 898],
-                                          9: [899, 1010],
-                                        };
-                                        for (final entry in generationRanges.entries) {
-                                          final range = entry.value;
-                                          if (pokemon.id >= range[0] && pokemon.id <= range[1]) {
-                                            return entry.key;
-                                          }
-                                        }
-                                        return '?';
-                                      })()}',
-                                  style: const TextStyle(
-                                    color: Colors.blueGrey,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        // Pokemon Image
+                        // Character Image
                         Center(
                           child: CachedNetworkImage(
-                            imageUrl: pokemon.imageUrl,
-                            height: 140,
+                            imageUrl: character.imageUrl,
+                            height: 160,
                             fit: BoxFit.contain,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
 
-                        // Evolution Chain
-                        if (pokemon.evolutionChain != null &&
-                            pokemon.evolutionChain!.isNotEmpty) ...[
-                          Text(
-                            AppLocalizations.of(context)!.evolutionChain,
-                            style: const TextStyle(
-                              color: Colors.black54,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Center(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: pokemon.evolutionChain!
-                                    .asMap()
-                                    .entries
-                                    .expand((entry) {
-                                      final index = entry.key;
-                                      final evolution = entry.value;
-                                      final isCurrentPokemon =
-                                          evolution.name.toLowerCase() ==
-                                          pokemon.name.toLowerCase();
-
-                                      final widgets = <Widget>[];
-
-                                      // Add the Pokemon sprite
-                                      widgets.add(
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: isCurrentPokemon
-                                                    ? Border.all(
-                                                        color: const Color(
-                                                          0xFF1a8fe3,
-                                                        ),
-                                                        width: 3,
-                                                      )
-                                                    : null,
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: CachedNetworkImage(
-                                                imageUrl: evolution.imageUrl,
-                                                height: isCurrentPokemon
-                                                    ? 65
-                                                    : 45,
-                                                width: isCurrentPokemon
-                                                    ? 65
-                                                    : 45,
-                                                fit: BoxFit.contain,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              _getLocalizedEvolutionName(
-                                                evolution,
-                                                context,
-                                              ),
-                                              style: TextStyle(
-                                                fontSize: isCurrentPokemon
-                                                    ? 12
-                                                    : 10,
-                                                fontWeight: isCurrentPokemon
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-
-                                      // Add arrow if not the last evolution
-                                      if (index <
-                                          pokemon.evolutionChain!.length - 1) {
-                                        widgets.add(
-                                          const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 8.0,
-                                            ),
-                                            child: Icon(
-                                              Icons.arrow_forward,
-                                              color: Colors.black54,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        );
-                                      }
-
-                                      return widgets;
-                                    })
-                                    .toList(),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-
-                        // Types
-                        Text(
-                          AppLocalizations.of(context)!.type,
-                          style: const TextStyle(
-                            color: Colors.black54,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          children: pokemon.types.map((type) {
-                            final typeColor = _getTypeColor(type);
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: typeColor,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Text(
-                                _getLocalizedTypeName(type, context),
+                        // Name & ID
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                _getLocalizedCharacterName(character, context),
                                 style: const TextStyle(
-                                  fontSize: 14,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                '#${character.id}',
+                                style: const TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 13,
                                 ),
                               ),
-                            );
-                          }).toList(),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 20),
 
-                        // Physical Stats
-                        Text(
-                          AppLocalizations.of(context)!.physicalStats,
-                          style: const TextStyle(
-                            color: Colors.black54,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        // Info chips row
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
                           children: [
-                            _buildStatItem(
-                              AppLocalizations.of(context)!.height,
-                              '${(pokemon.height / 10).toStringAsFixed(1)} m',
-                              labelColor: Colors.black54,
+                            _infoChip(Icons.people, character.race),
+                            _infoChip(
+                              character.gender.toLowerCase() == 'female'
+                                  ? Icons.female
+                                  : Icons.male,
+                              character.gender,
                             ),
-                            _buildStatItem(
-                              AppLocalizations.of(context)!.weight,
-                              '${(pokemon.weight / 10).toStringAsFixed(1)} kg',
-                              labelColor: Colors.black54,
-                            ),
+                            _infoChip(Icons.groups, character.affiliation),
                           ],
                         ),
                         const SizedBox(height: 20),
 
-                        // Base Stats
-                        if (pokemon.baseStats.isNotEmpty) ...[
-                          Text(
-                            AppLocalizations.of(context)!.baseStats,
-                            style: const TextStyle(
-                              color: Colors.black54,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        // Ki stats
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF3F4F6),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          const SizedBox(height: 8),
-                          Column(
-                            children: pokemon.baseStats.entries.map((entry) {
-                              final statName = entry.key
-                                  .replaceAll('-', ' ')
-                                  .toUpperCase();
-                              final statValue = entry.value;
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0,
-                                ),
+                          child: Row(
+                            children: [
+                              Expanded(
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          statName,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 11,
-                                          ),
-                                        ),
-                                        Text(
-                                          '$statValue',
-                                          style: const TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: LinearProgressIndicator(
-                                        value: (statValue / 255.0).clamp(0, 1),
-                                        backgroundColor: Colors.grey[300],
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              _getStatColor(statValue),
-                                            ),
-                                        minHeight: 6,
+                                    const Text(
+                                      'Base Ki',
+                                      style: TextStyle(
+                                        color: Colors.black45,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
                                       ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      character.ki,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                      ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ],
                                 ),
-                              );
-                            }).toList(),
+                              ),
+                              Container(
+                                width: 1,
+                                height: 36,
+                                color: Colors.black12,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    const Text(
+                                      'Max Ki',
+                                      style: TextStyle(
+                                        color: Colors.black45,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      character.maxKi,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 20),
-                        ],
+                        ),
+                        const SizedBox(height: 20),
 
-                        // Abilities
-                        if (pokemon.abilities.isNotEmpty) ...[
-                          Text(
-                            AppLocalizations.of(context)!.abilities,
-                            style: const TextStyle(
+                        // Description
+                        if (character.description.isNotEmpty) ...[
+                          const Text(
+                            'Description',
+                            style: TextStyle(
                               color: Colors.black54,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: pokemon.abilities.map((ability) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF3F4F6),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.black12),
-                                ),
-                                child: Text(
-                                  ability[0].toUpperCase() +
-                                      ability.substring(1).replaceAll('-', ' '),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                          const SizedBox(height: 6),
+                          Text(
+                            character.description,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                              height: 1.5,
+                            ),
                           ),
+                          const SizedBox(height: 20),
                         ],
                       ],
                     ),
@@ -2490,6 +2156,31 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     );
   }
 
+  Widget _infoChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3F4F6),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: Colors.black54),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Color _getStatColor(int statValue) {
     if (statValue >= 200) return const Color(0xFF00FF00); // Bright green
     if (statValue >= 150) return const Color(0xFF7FFF00); // Lime
@@ -2501,7 +2192,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   Widget _buildResultScreen(GameState gameState) {
     final isCorrect = gameState.lastGuessResult == GuessResult.correct;
     final isTimeout = gameState.lastGuessResult == GuessResult.timeout;
-    final pokemon = gameState.currentPlayer?.currentPokemon;
+    final character = gameState.currentPlayer?.currentCharacter;
 
     return Scaffold(
       appBar: AppBar(
@@ -2547,7 +2238,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 ),
                 const SizedBox(height: 20),
 
-                if (pokemon != null) ...[
+                if (character != null) ...[
                   Card(
                     color: const Color(0xFF464646),
                     child: Padding(
@@ -2555,24 +2246,17 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       child: Column(
                         children: [
                           CachedNetworkImage(
-                            imageUrl: pokemon.imageUrl,
+                            imageUrl: character.imageUrl,
                             height: 150,
                             fit: BoxFit.contain,
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            _getLocalizedPokemonName(pokemon, context),
+                            _getLocalizedCharacterName(character, context),
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            'Type: ${pokemon.typesString}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white70,
                             ),
                           ),
                         ],
